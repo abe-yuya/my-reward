@@ -1,0 +1,101 @@
+version: "3.9"
+
+services:
+  nginx:
+    build: ".docker/nginx"
+    container_name: my-reward-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./public:/app/public
+      - ./.docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - app
+
+  app:
+    build: ".docker/php"
+    container_name: my-reward-app
+    volumes:
+      - ".:/app"
+      - "./.docker/php/php.ini:/user/local/etc/php/conf/d/php.ini"
+    ports:
+      - "9000:9000"
+    environment:
+      - USER_NAME
+      - USER_ID
+      - GROUP_NAME
+      - GROUP_ID
+    depends_on:
+      - mysql
+      - redis
+      - minio
+      - mailcatcher
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      - "auth.localhost:host-gateway"
+
+  mysql:
+    build: ".docker/mysql"
+    container_name: my-reward-mysql
+    platform: linux/x86_64
+    ports:
+      - "3306:3306"
+    volumes:
+      - "./storage/mysql:/var/lib/mysql"
+    environment:
+      MYSQL_DATABASE: my-reward
+      MYSQL_USER: user
+      MYSQL_PASSWORD: rootroot
+      MYSQL_ROOT_PASSWORD: rootroot
+
+  queue_worker:
+    build: ".docker/php"
+    container_name: my-reward-queue-worker
+    working_dir: "/app"
+    command: "php artisan queue:work --tries=3"
+    volumes:
+      - ".:/app"
+      - "./.docker/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
+    depends_on:
+      - mysql
+      - redis
+      - minio
+      - mailcatcher
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      - "auth.localhost:host-gateway"
+
+  redis:
+    image: redis:5.0.6-alpine
+    container_name: my-reward-redis
+    ports:
+      - "6379:6379"
+
+  minio:
+    image: minio/minio
+    container_name: my-reward-minio
+    ports:
+      - "9001:9000"
+    environment:
+      MINIO_ACCESS_KEY: access_key
+      MINIO_SECRET_KEY: secret_key
+    command: server /export
+
+  create-bucket:
+    container_name: my-reward-create-bucket
+    image: minio/mc
+    entrypoint: [ "" ]
+    command:
+      - /bin/sh
+      - -c
+      - |
+        until (mc config host add minio http://minio:9000 access_key secret_key) do echo 'wait until add host' && sleep 1; done;
+        mc mb minio/test
+        mc policy set public minio/test
+    environment:
+      MINIO_ACCESS_KEY: access_key
+      MINIO_SECRET_KEY: secret_key
+    depends_on:
+      - minio
+
+
