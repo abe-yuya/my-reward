@@ -3,47 +3,48 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Providers\RouteServiceProvider;
+use App\Repositories\User\UserRepositoryContract;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
+use Illuminate\View\View;
 
+/**
+ * ユーザー登録
+ */
 class RegisteredUserController extends Controller
 {
+    private UserRepositoryContract $userRepository;
+
+    public function __construct(UserRepositoryContract $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
     /**
-     * Display the registration view.
+     * ユーザー登録画面
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
-    public function create()
+    public function create(): View
     {
         return view('auth.register');
     }
 
     /**
-     * Handle an incoming registration request.
+     * ユーザー登録
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     *
-     * @throws \Illuminate\Validation\ValidationException
+     * @param RegisterUserRequest $request
+     * @return RedirectResponse
      */
-    public function store(Request $request)
+    public function store(RegisterUserRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        $user = $this->userRepository->createUser(
+            $request->getName(),
+            $request->getEmail(),
+            $request->getPassword()
+        );
 
         event(new Registered($user));
 
