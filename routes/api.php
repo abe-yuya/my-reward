@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Frontend\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,11 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
-Route::middleware('auth')->group(function () {
+Route::group(['middleware' => ['auth:sanctum']], function() {
     // ユーザープロフィール系
     Route::get('/show/{user_id}', [UserController::class, 'show'])->name('user.show');
     Route::post('/update/{user_id}', [UserController::class, 'update'])->name('user.update');

@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Frontend;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Repositories\User\UserRepositoryContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
 /**
- * ユーザー関連
+ * Class UserController ユーザー関連の操作
+ * @package App\Http\Controllers\Frontend
  */
 class UserController extends Controller
 {
