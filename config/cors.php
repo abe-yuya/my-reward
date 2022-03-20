@@ -1,5 +1,5 @@
 <?php
-
+$domain = config('app.domain');
 return [
 
     /*
@@ -15,6 +15,7 @@ return [
     |
     */
 
+    // CORSを設定するURI
     'paths' => [
         'api/*',
         'sanctum/csrf-cookie',
@@ -22,13 +23,17 @@ return [
         'logout',
     ],
 
+    // 許可するリクエストメソッド
     'allowed_methods' => ['*'],
 
+    // 許可するリクエストオリジンの設定
     'allowed_origins' => ['*'],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
 
-    'allowed_headers' => ['*'],
+    ],
+
+    'allowed_headers' => ['Authorization, X-XSRF-TOKEN, Content-Type'],
 
     'exposed_headers' => [],
 
