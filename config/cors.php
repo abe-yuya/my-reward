@@ -15,7 +15,6 @@ return [
     |
     */
 
-    // CORSを設定するURI
     'paths' => [
         'api/*',
         'sanctum/csrf-cookie',
@@ -23,14 +22,14 @@ return [
         'logout',
     ],
 
-    // 許可するリクエストメソッド
-    'allowed_methods' => ['*'],
+    'allowed_methods' => ['GET', 'POST'],
 
-    // 許可するリクエストオリジンの設定
-    'allowed_origins' => ['*'],
+    'allowed_origins' => [],
 
     'allowed_origins_patterns' => [
-
+        config('app.env') !== 'local'
+            ? "~\Ahttps?://{$domain}(/.*)?\z~"
+            : "~\Ahttps?://{$domain}:3000(/.*)?\z~"
     ],
 
     'allowed_headers' => ['Authorization, X-XSRF-TOKEN, Content-Type'],
