@@ -3,9 +3,15 @@
 namespace Tests;
 
 use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Support\Facades\Artisan;
 
 trait CreatesApplication
 {
+    /**
+     * @var bool
+     */
+    protected $isSetUpDatabase = false;
+
     /**
      * Creates the application.
      *
@@ -17,6 +23,22 @@ trait CreatesApplication
 
         $app->make(Kernel::class)->bootstrap();
 
+        $this->setUpDatabase();
+
         return $app;
+    }
+
+    /**
+     * Run migration once
+     */
+    protected function setUpDatabase(): void
+    {
+        if ($this->isSetUpDatabase) {
+            return;
+        }
+
+        Artisan::call('migrate:fresh');
+
+        $this->isSetUpDatabase = true;
     }
 }

@@ -90,6 +90,7 @@ return [
         'string'  => ':attributeは、:min文字以上で指定してください。',
         'array'   => ':attributeは:min個以上指定してください。',
     ],
+    'new_password'         => ':attributeは必ずアルファベット大文字、小文字、数字、記号のいずれか3種類を必ず含んでください',
     'not_in'               => '選択された:attributeは正しくありません。',
     'not_regex'            => ':attributeの形式が正しくありません。',
     'numeric'              => ':attributeには、数字を指定してください。',
