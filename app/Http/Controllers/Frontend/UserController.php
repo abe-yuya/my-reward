@@ -26,16 +26,6 @@ class UserController extends Controller
     }
 
     /**
-     * ユーザー詳細
-     * @param int $userId
-     * @return JsonResponse
-     */
-    public function show(int $userId): JsonResponse
-    {
-        return response()->json($this->userRepository->findUser($userId));
-    }
-
-    /**
      * ユーザー情報更新
      * @param int $userId
      * @param UpdateUserRequest $request

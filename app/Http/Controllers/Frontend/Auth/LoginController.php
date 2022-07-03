@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Frontend\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class LoginController SPA認証
@@ -15,15 +17,12 @@ class LoginController extends Controller
 {
     /**
      * ログインAPI
-     * @param Request $request
+     * @param LoginRequest $request
      * @return JsonResponse
      */
-    public function login(Request $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
-        $credentials = $request->validate([
-           'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string']
-        ]);
+        $credentials = $request->loginParams();
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();

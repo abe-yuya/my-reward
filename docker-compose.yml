@@ -65,16 +65,16 @@ services:
       MYSQL_PASSWORD: rootroot
       MYSQL_ROOT_PASSWORD: rootroot
 
-  mysql-testing:
-    build: ".docker/mysql"
-    container_name: my-reward-mysql-testing
-    ports:
-      - "3300:3306"
-    environment:
-      MYSQL_DATABASE: my-reward-test
-      MYSQL_USER: test
-      MYSQL_PASSWORD: testtest
-      MYSQL_ROOT_PASSWORD: testtest
+#  mysql-testing:
+#    build: ".docker/mysql"
+#    container_name: my-reward-mysql-testing
+#    ports:
+#      - "3300:3306"
+#    environment:
+#      MYSQL_DATABASE: my-reward-test
+#      MYSQL_USER: test
+#      MYSQL_PASSWORD: testtest
+#      MYSQL_ROOT_PASSWORD: testtest
 
   redis:
     image: redis:5.0.6-alpine

@@ -3,7 +3,9 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Auth\Events\Lockout;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
@@ -57,6 +59,17 @@ class LoginRequest extends FormRequest
     }
 
     /**
+     * @return array
+     */
+    public function loginParams(): array
+    {
+        return [
+            'email' => $this->input('email'),
+            'password' => $this->input('password'),
+        ];
+    }
+
+    /**
      * Ensure the login request is not rate limited.
      *
      * @return void
@@ -89,5 +102,16 @@ class LoginRequest extends FormRequest
     public function throttleKey()
     {
         return Str::lower($this->input('email')).'|'.$this->ip();
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $res = response()->json([
+            'status' => 422,
+            'messages' => $validator->errors()->messages(),
+            'data' => $this->all(),
+        ]);
+
+        throw new HttpResponseException($res);
     }
 }
