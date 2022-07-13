@@ -6,7 +6,6 @@ use App\Rules\Password;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Log;
 
 class RegisterUserRequest extends FormRequest
 {
@@ -52,9 +51,11 @@ class RegisterUserRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         $res = response()->json([
-            'status' => 422,
-            'messages' => $validator->errors()->messages(),
-            'data' => $this->all(),
+            'data' => [
+                'status' => 422,
+                'messages' => $validator->errors()->messages(),
+                'data' => $this->all(),
+            ]
         ]);
 
         throw new HttpResponseException($res);

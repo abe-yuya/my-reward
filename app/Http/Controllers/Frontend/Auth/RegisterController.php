@@ -6,9 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Repositories\User\UserRepositoryContract;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class RegisterController SPA認証
@@ -42,6 +40,10 @@ class RegisterController extends Controller
             );
         });
 
-        return response()->json();
+        return response()->json([
+            'data' => [
+                'status' => 200
+            ],
+        ]);
     }
 }

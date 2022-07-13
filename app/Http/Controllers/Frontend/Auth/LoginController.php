@@ -7,7 +7,6 @@ use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class LoginController SPA認証
@@ -27,7 +26,12 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return response()->json(Auth::user());
+            return response()->json([
+                'data' => [
+                    'data' => Auth::user(),
+                    'status' => 200
+                ]
+            ]);
         }
 
         return response()->json(['message' => 'ログインに失敗しました'], 401);
